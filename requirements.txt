@@ -1,6 +1,7 @@
 requests
 pandas
 gsheetsdb
+pyparsing
 streamlit
 pydeck
 streamlit-option-menu
