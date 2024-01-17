@@ -2,7 +2,9 @@ import requests
 import pandas as pd
 import time
 from datetime import datetime
-from gsheetsdb import connect
+import gspread
+from gspread_dataframe import set_with_dataframe
+from google.oauth2.service_account import Credentials
 import os
 import json
 import streamlit as st
@@ -10,29 +12,26 @@ import pydeck as pdk
 from urllib.request import urlopen #jsonファイル形式で取得するアニメーションファイルをアプリに表示する
 from streamlit_option_menu import option_menu
 
-
-# //////////////////  環境変数
-
-# Google SpreadsheetのURL
-spreadsheet_url = st.secrets["spreadsheet_url"]
-
-# gsheetsdbでの接続
-conn = connect()
-
-# スプレッドシートのデータをクエリ
-def run_query(query):
-    rows = conn.execute(query, headers=1)
-    return pd.DataFrame(rows)
-
-
 # //////////////////  関数
 
-# シートのデータをDataFrameに変換する関数
+# StreamlitのSecretsから情報を取得
+gcp_service_account_info = st.secrets["gcp_service_account"]
+spreadsheet_key = st.secrets["spreadsheet_key"]
+
+# 指定されたスプレッドシートとシート名からDataFrameを作成する関数
 def get_dataframe_from_sheet(spreadsheet, sheet_name):
     worksheet = spreadsheet.worksheet(sheet_name)
     data = worksheet.get_all_values()
     return pd.DataFrame(data[1:], columns=data[0])
 
+# シートのデータをDataFrameに変換
+df_login = get_dataframe_from_sheet(spreadsheet, 'login')
+
+# 指定されたスプレッドシートとシート名からDataFrameを作成する関数
+def get_dataframe_from_sheet(spreadsheet, sheet_name):
+    worksheet = spreadsheet.worksheet(sheet_name)
+    data = worksheet.get_all_values()
+    return pd.DataFrame(data[1:], columns=data[0])
 
 # 新規登録フォームの内容をSpreadsheetに送る
 def form_upload(email, password, first_name, last_name, tel, spreadsheet):
@@ -61,9 +60,18 @@ def initialize_session_state(variables):
 
 # //////////////////  データベース系
 
+
+# GCPサービスアカウントで認証
+credentials = Credentials.from_service_account_info(gcp_service_account_info, 
+                                                    scopes=['https://www.googleapis.com/auth/spreadsheets',
+                                                            'https://www.googleapis.com/auth/drive'])
+gc = gspread.authorize(credentials)
+
+# スプレッドシートのIDを指定して開く
+spreadsheet = gc.open_by_key(spreadsheet_key)
+
 # シートのデータをDataFrameに変換
-query = f'SELECT * FROM "{spreadsheet_url}"'
-df_login = run_query(query)
+df_login = get_dataframe_from_sheet(spreadsheet, 'login')
 
 
 # //////////////////  streamlitの設定選択された項目に基づいて表示を切り替え
