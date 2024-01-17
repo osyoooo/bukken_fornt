@@ -27,12 +27,6 @@ def get_dataframe_from_sheet(spreadsheet, sheet_name):
 # シートのデータをDataFrameに変換
 df_login = get_dataframe_from_sheet(spreadsheet, 'login')
 
-# 指定されたスプレッドシートとシート名からDataFrameを作成する関数
-def get_dataframe_from_sheet(spreadsheet, sheet_name):
-    worksheet = spreadsheet.worksheet(sheet_name)
-    data = worksheet.get_all_values()
-    return pd.DataFrame(data[1:], columns=data[0])
-
 # 新規登録フォームの内容をSpreadsheetに送る
 def form_upload(email, password, first_name, last_name, tel, spreadsheet):
     keys = email + password
