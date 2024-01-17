@@ -14,7 +14,8 @@ from streamlit_option_menu import option_menu
 
 # スプレッドシートにアクセス
 gc = gspread.service_account()
-spreadsheet = gc.open_by_key('1R191trRqSI7ukjSUv_ZtWCmt57ve-EntXsLS6161SUM')
+spreadsheet_key = st.secrets["spreadsheet_key"]
+spreadsheet = gc.open_by_key(spreadsheet_key)
 
 
 # //////////////////  関数
