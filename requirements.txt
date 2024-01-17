@@ -1,6 +1,7 @@
 requests
 pandas
 gsheetsdb
+shillelagh
 pyparsing
 streamlit
 pydeck
