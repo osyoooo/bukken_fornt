@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import time
 from datetime import datetime
-from gspread_dataframe import set_with_dataframe
+import gspread
 from google.oauth2.service_account import Credentials
 import os
 import json
