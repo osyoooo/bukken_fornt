@@ -1,7 +1,6 @@
 gspread
 requests
 pandas
-gspread-dataframe
 google-auth
 streamlit
 pydeck
