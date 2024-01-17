@@ -1,6 +1,6 @@
+gspread
 requests
 pandas
-gspread
 gspread-dataframe
 google-auth
 streamlit
