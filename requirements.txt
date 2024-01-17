@@ -1,7 +1,8 @@
 requests
 pandas
-gsheetsdb
-shillelagh
+gspread
+gspread-dataframe
+google-auth
 streamlit
 pydeck
 streamlit-option-menu
