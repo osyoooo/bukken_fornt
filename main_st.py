@@ -2,8 +2,7 @@ import requests
 import pandas as pd
 import time
 from datetime import datetime
-import gspread
-from gspread_dataframe import set_with_dataframe
+from gsheetsdb import connect
 import os
 import json
 import streamlit as st
@@ -14,16 +13,16 @@ from streamlit_option_menu import option_menu
 
 # //////////////////  環境変数
 
-# StreamlitのSecretsからサービスアカウント情報を取得
-gcp_service_account_info = st.secrets["gcp_service_account"]
+# Google SpreadsheetのURL
+spreadsheet_url = st.secrets["spreadsheet_url"]
 
-# GCPサービスアカウントで認証
-credentials = gspread.service_account_from_dict(gcp_service_account_info)
+# gsheetsdbでの接続
+conn = connect()
 
-# スプレッドシートにアクセス
-gc = gspread.authorize(credentials)
-spreadsheet_key = st.secrets["spreadsheet_key"]
-spreadsheet = gc.open_by_key(spreadsheet_key)
+# スプレッドシートのデータをクエリ
+def run_query(query):
+    rows = conn.execute(query, headers=1)
+    return pd.DataFrame(rows)
 
 
 # //////////////////  関数
@@ -63,7 +62,8 @@ def initialize_session_state(variables):
 # //////////////////  データベース系
 
 # シートのデータをDataFrameに変換
-df_login = get_dataframe_from_sheet(spreadsheet, 'login')
+query = f'SELECT * FROM "{spreadsheet_url}"'
+df_login = run_query(query)
 
 
 # //////////////////  streamlitの設定選択された項目に基づいて表示を切り替え
