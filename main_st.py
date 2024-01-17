@@ -24,7 +24,7 @@ def get_dataframe_from_sheet(spreadsheet, sheet_name):
     return pd.DataFrame(data[1:], columns=data[0])
 
 
-# 新規登録フォームの内容をSpreadsheetに送る
+# 新規登録フォームの内容をSpに送る
 def form_upload(email, password, first_name, last_name, tel, spreadsheet):
     keys = email + password
     new_data = {
