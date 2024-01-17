@@ -15,7 +15,6 @@ from streamlit_option_menu import option_menu
 
 # StreamlitのSecretsから情報を取得
 gcp_service_account_info = st.secrets["gcp_service_account"]
-spreadsheet_key = st.secrets["spreadsheet_key"]
 
 # 指定されたスプレッドシートとシート名からDataFrameを作成する関数
 def get_dataframe_from_sheet(spreadsheet, sheet_name):
@@ -61,7 +60,7 @@ credentials = Credentials.from_service_account_info(gcp_service_account_info,
 gc = gspread.authorize(credentials)
 
 # スプレッドシートのIDを指定して開く
-spreadsheet = gc.open_by_key(spreadsheet_key)
+spreadsheet = gc.open_by_key("1R191trRqSI7ukjSUv_ZtWCmt57ve-EntXsLS6161SUM")
 
 # シートのデータをDataFrameに変換
 df_login = get_dataframe_from_sheet(spreadsheet, 'login')
