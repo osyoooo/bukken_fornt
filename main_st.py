@@ -12,10 +12,12 @@ from urllib.request import urlopen #jsonファイル形式で取得するアニ�
 from streamlit_option_menu import option_menu
 
 
-# スプレッドシートにアクセス
-gc = gspread.service_account()
+# //////////////////  環境変数
+
+# StreamlitのSecretsからスプレッドシートキーを取得
 spreadsheet_key = st.secrets["spreadsheet_key"]
-spreadsheet = gc.open_by_key(spreadsheet_key)
+gc = gspread.authorize() # gspreadのデフォルトの認証を使用してスプレッドシートにアクセス
+spreadsheet = gc.open_by_key(spreadsheet_key) # スプレッドシートを開く
 
 
 # //////////////////  関数
@@ -25,6 +27,7 @@ def get_dataframe_from_sheet(spreadsheet, sheet_name):
     worksheet = spreadsheet.worksheet(sheet_name)
     data = worksheet.get_all_values()
     return pd.DataFrame(data[1:], columns=data[0])
+
 
 # 新規登録フォームの内容をSpreadsheetに送る
 def form_upload(email, password, first_name, last_name, tel, spreadsheet):
