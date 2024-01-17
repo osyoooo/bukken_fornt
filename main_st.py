@@ -13,10 +13,6 @@ from streamlit_option_menu import option_menu
 
 # //////////////////  関数
 
-# StreamlitのSecretsから情報を取得
-gcp_service_account_info = st.secrets["gcp_service_account"]
-
-
 # 指定されたスプレッドシートとシート名からDataFrameを作成する関数
 def get_dataframe_from_sheet(spreadsheet, sheet_name):
     worksheet = spreadsheet.worksheet(sheet_name)
@@ -51,6 +47,8 @@ def initialize_session_state(variables):
 
 # //////////////////  データベース系
 
+# StreamlitのSecretsから情報を取得
+gcp_service_account_info = st.secrets["gcp_service_account"]
 
 # GCPサービスアカウントで認証
 credentials = Credentials.from_service_account_info(gcp_service_account_info, 
