@@ -1,7 +1,6 @@
 requests
 pandas
-gspread
-gspread-dataframe
+gsheetsdb
 streamlit
 pydeck
 streamlit-option-menu
