@@ -14,10 +14,16 @@ from streamlit_option_menu import option_menu
 
 # //////////////////  環境変数
 
-# StreamlitのSecretsからスプレッドシートキーを取得
+# StreamlitのSecretsからサービスアカウント情報を取得
+gcp_service_account_info = st.secrets["gcp_service_account"]
+
+# GCPサービスアカウントで認証
+credentials = gspread.service_account_from_dict(gcp_service_account_info)
+
+# スプレッドシートにアクセス
+gc = gspread.authorize(credentials)
 spreadsheet_key = st.secrets["spreadsheet_key"]
-gc = gspread.authorize() # gspreadのデフォルトの認証を使用してスプレッドシートにアクセス
-spreadsheet = gc.open_by_key(spreadsheet_key) # スプレッドシートを開く
+spreadsheet = gc.open_by_key(spreadsheet_key)
 
 
 # //////////////////  関数
