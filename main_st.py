@@ -45,6 +45,16 @@ def initialize_session_state(variables):
     for var in variables:
         st.session_state[var] = st.session_state.get(var, '')
 
+
+# HTMLでLINE共有ボタンを作成する関数
+def create_line_button(line_url):
+    return f'''
+        <div class="line-it-button" data-lang="ja" data-type="share-a" data-env="REAL" data-url="{line_url}" data-color="default" data-size="large" data-count="false" data-ver="3"></div>
+        <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+    '''
+
+
+
 # //////////////////  データベース系
 
 # StreamlitのSecretsから情報を取得
@@ -129,13 +139,6 @@ if selected == "物件検索":
     # 選択されたURLを取得
     df_line['Select'] = st.session_state['select']
     selected_urls = df_line[df_line['Select']]['URL'].tolist()
-
-    # HTMLでLINE共有ボタンを作成する関数
-    def create_line_button(line_url):
-        return f'''
-            <div class="line-it-button" data-lang="ja" data-type="share-a" data-env="REAL" data-url="{line_url}" data-color="default" data-size="large" data-count="false" data-ver="3"></div>
-            <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
-        '''
 
     # リセットボタン
     if st.button('リセット'):
