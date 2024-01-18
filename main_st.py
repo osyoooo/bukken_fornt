@@ -104,6 +104,9 @@ with st.sidebar:
 
 # //////////////////  物件検索のメニュー
 
+# 物件検索のメニュー
+selected = st.sidebar.selectbox("メニュー", ["ホーム", "物件検索", "その他"])
+
 if selected == "物件検索":
     st.write("物件検索用のページ")
 
@@ -116,14 +119,14 @@ if selected == "物件検索":
 
     # チェックボックスの列を追加
     if 'select' not in st.session_state:
-        st.session_state['select'] = [False] * len(ddf_line)
+        st.session_state['select'] = [False] * len(df_line)
 
     # Streamlitのテーブルで表示
-    for index, row in df.iterrows():
+    for index, row in df_line.iterrows():
         st.session_state['select'][index] = st.checkbox(row["物件名"], key=f"checkbox_{index}")
 
     # 選択されたURLを取得
-    df['Select'] = st.session_state['select']
+    df_line['Select'] = st.session_state['select']
     selected_urls = df_line[df_line['Select']]['URL'].tolist()
 
     # HTMLでLINE共有ボタンを作成する関数
@@ -135,7 +138,7 @@ if selected == "物件検索":
 
     # リセットボタン
     if st.button('リセット'):
-        st.session_state['select'] = [False] * len(df)
+        st.session_state['select'] = [False] * len(df_line)
         selected_urls = []
 
     # 選択されたURLがあれば、LINE共有ボタンを表示
@@ -143,6 +146,7 @@ if selected == "物件検索":
         # 最初の選択されたURLに対してLINE共有ボタンを生成
         line_button_html = create_line_button(selected_urls[0])
         st.markdown(line_button_html, unsafe_allow_html=True)
+
 
 
 # //////////////////  ログイン・マイページの項目
