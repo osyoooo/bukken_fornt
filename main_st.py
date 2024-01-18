@@ -120,7 +120,11 @@ if selected == "物件検索":
 
     # Streamlitのテーブルで表示
     for index, row in df_line.iterrows():
-        st.session_state['select'][index] = st.checkbox(row["物件名"], key=f"checkbox_{index}")
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.session_state['select'][index] = st.checkbox("", key=f"checkbox_{index}")
+        with col2:
+            st.markdown(f"**{row['物件名']}**: {row['URL']}")
 
     # 選択されたURLを取得
     df_line['Select'] = st.session_state['select']
