@@ -107,6 +107,42 @@ with st.sidebar:
 if selected == "物件検索":
     st.write("物件検索用のページ")
 
+    # ダミーの物件データ
+    data_line = {
+        "物件名": ["物件A", "物件B", "物件C"],
+        "URL": ["https://suumo.jp/chintai/jnc_000079607104/", "https://suumo.jp/chintai/jnc_000080672100/", "https://suumo.jp/chintai/jnc_000087709468/"]
+    }
+    df_line = pd.DataFrame(data_line)
+
+    # チェックボックスの列を追加
+    if 'select' not in st.session_state:
+        st.session_state['select'] = [False] * len(ddf_line)
+
+    # Streamlitのテーブルで表示
+    for index, row in df.iterrows():
+        st.session_state['select'][index] = st.checkbox(row["物件名"], key=f"checkbox_{index}")
+
+    # 選択されたURLを取得
+    df['Select'] = st.session_state['select']
+    selected_urls = df_line[df_line['Select']]['URL'].tolist()
+
+    # HTMLでLINE共有ボタンを作成する関数
+    def create_line_button(line_url):
+        return f'''
+            <div class="line-it-button" data-lang="ja" data-type="share-a" data-env="REAL" data-url="{line_url}" data-color="default" data-size="large" data-count="false" data-ver="3"></div>
+            <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+        '''
+
+    # リセットボタン
+    if st.button('リセット'):
+        st.session_state['select'] = [False] * len(df)
+        selected_urls = []
+
+    # 選択されたURLがあれば、LINE共有ボタンを表示
+    if selected_urls:
+        # 最初の選択されたURLに対してLINE共有ボタンを生成
+        line_button_html = create_line_button(selected_urls[0])
+        st.markdown(line_button_html, unsafe_allow_html=True)
 
 
 # //////////////////  ログイン・マイページの項目
