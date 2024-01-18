@@ -104,9 +104,6 @@ with st.sidebar:
 
 # //////////////////  物件検索のメニュー
 
-# 物件検索のメニュー
-selected = st.sidebar.selectbox("メニュー", ["ホーム", "物件検索", "その他"])
-
 if selected == "物件検索":
     st.write("物件検索用のページ")
 
