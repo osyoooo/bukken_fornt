@@ -149,28 +149,26 @@ if selected == "物件検索":
     df_properties['最寄り駅1徒歩時間'] = pd.to_numeric(df_properties['最寄り駅1徒歩時間'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
     df_properties.dropna(subset=['最寄り駅1徒歩時間'], inplace=True)  # 最寄り駅1徒歩時間がNaNの行を削除
 
-    # 絞り込み条件の入力
+     # 絞り込み条件の入力
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        layout_type = st.multiselect("間取り", [])
+        layout_type = st.multiselect("間取り", df_properties['間取り'].unique())
         built_year = st.slider("築年整数", 0, 100, (0, 100))
-        building_type = st.multiselect("建物種別", [])
+        building_type = st.multiselect("建物種別", df_properties['建物種別'].unique())
 
     with col2:
         area = st.slider("専有面積", 0, 200, (0, 200))
-        direction = st.multiselect("向き", [])
+        direction = st.multiselect("向き", df_properties['向き'].unique())
         rent = st.slider("家賃", 0, 1000000, (0, 1000000))
 
     with col3:
         base_floor = st.slider("基準階", 0, 50, (0, 50))
-        floor_type = st.multiselect("層分類", [])
+        floor_type = st.multiselect("層分類", df_properties['層分類'].unique())
         walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
 
     # 検索ボタン
     if st.button('検索'):
-       
-
         # フィルタリング
         filtered_properties = df_properties[
             df_properties['間取り'].isin(layout_type) &
@@ -185,24 +183,7 @@ if selected == "物件検索":
         ]
 
         # 結果の地図表示
-        st.pydeck_chart(pdk.Deck(
-            map_style='mapbox://styles/mapbox/light-v9',
-            initial_view_state=pdk.ViewState(
-                latitude=filtered_properties['Lat'].mean(),
-                longitude=filtered_properties['Lng'].mean(),
-                zoom=11,
-                pitch=50,
-            ),
-            layers=[
-                pdk.Layer(
-                    'ScatterplotLayer',
-                    data=filtered_properties,
-                    get_position='[Lng, Lat]',
-                    get_color='[200, 30, 0, 160]',
-                    get_radius=100,
-                ),
-            ],
-        ))
+        # ...（地図表示コード）
 
         # 結果のテーブル表示
         st.dataframe(filtered_properties)
