@@ -82,6 +82,7 @@ def create_map(df):
         st.pydeck_chart(pdk.Deck(map_style='mapbox://styles/mapbox/light-v9', initial_view_state=view_state, layers=[layer], tooltip=tooltip))
     else:
         st.write("該当する物件はありません。")
+        
 # //////////////////  データベース系
 
 # StreamlitのSecretsから情報を取得
@@ -236,24 +237,10 @@ if selected == "物件検索":
         # 結果の地図表示
         create_map(filtered_properties)
 
-        # 選択された物件のURLを保存するリスト
-        # チェックボックスの状態を管理するためのセッション状態を初期化
-        if 'selected_urls' not in st.session_state:
-            st.session_state['selected_urls'] = []
-
-        # チェックボックスとテーブルの表示
-        for index, row in filtered_properties.iterrows():
-            key = f"checkbox_{index}"
-            if st.checkbox(f"選択 {index}", key=key, value=key in st.session_state['selected_urls']):
-                if key not in st.session_state['selected_urls']:
-                    st.session_state['selected_urls'].append(key)
-            else:
-                if key in st.session_state['selected_urls']:
-                    st.session_state['selected_urls'].remove(key)
-
+        # テーブル表示
         st.write("検索結果のテーブル:")
         st.dataframe(filtered_properties)
-
+        
         # URLをSpreadsheetの 'gas' シートに送信するボタン
         if st.button('送信'):
             # 'gas' シートを取得
