@@ -8,4 +8,3 @@ pydeck
 streamlit-option-menu
 numpy
 folium
-streamlit-folium
