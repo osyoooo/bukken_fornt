@@ -115,6 +115,8 @@ with st.sidebar:
 
 # //////////////////  物件検索のメニュー
 
+# //////////////////  物件検索のメニュー
+
 # 物件検索のメニュー
 if selected == "物件検索":
     st.write("物件検索用のページ")
@@ -139,10 +141,9 @@ if selected == "物件検索":
 
     # 検索ボタン
     if st.button('検索'):
-        
-      　# 物件データの読み込み
+        # 物件データの読み込み
         df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
-        
+               
         # データタイプの変換とNaN値の処理
         df_properties['専有面積'] = pd.to_numeric(df_properties['専有面積'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
         df_properties.dropna(subset=['専有面積'], inplace=True)  # 専有面積がNaNの行を削除
@@ -167,7 +168,6 @@ if selected == "物件検索":
         # 最寄り駅1徒歩時間のデータ型変換とNaN値の処理
         df_properties['最寄り駅1徒歩時間'] = pd.to_numeric(df_properties['最寄り駅1徒歩時間'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
         df_properties.dropna(subset=['最寄り駅1徒歩時間'], inplace=True)  # 最寄り駅1徒歩時間がNaNの行を削除
-
 
         # フィルタリング
         filtered_properties = df_properties[
