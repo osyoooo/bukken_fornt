@@ -216,8 +216,23 @@ if selected == "物件検索":
         # 結果の地図表示
         create_map(filtered_properties)
 
-        # 結果のテーブル表示
-        st.dataframe(filtered_properties)
+        # 結果のテーブル表示（チェックボックス付き）
+        gas_urls = []
+        for index, row in filtered_properties.iterrows():
+            selected = st.checkbox("", key=f"checkbox_{index}")
+            if selected:
+                gas_urls.append(row['URL'])
+            st.write(row)
+
+        # URLをSpreadsheetの 'gas' シートに送信するボタン
+        if st.button('送信'):
+            # 'gas' シートを取得
+            gas_sheet = spreadsheet.worksheet('gas')
+            # URLを追加
+            for url in gas_urls:
+                gas_sheet.append_row([url])
+            st.success('URLが送信されました')
+
 
 
 # //////////////////  ログイン・マイページの項目
