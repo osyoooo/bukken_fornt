@@ -7,3 +7,4 @@ streamlit
 pydeck
 streamlit-option-menu
 numpy
+folium
