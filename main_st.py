@@ -49,41 +49,35 @@ def initialize_session_state(variables):
         st.session_state[var] = st.session_state.get(var, '')
 
 
-# 地図のピン（マーカー）に物件情報を表示する関数
-def create_map(df):
+# 物件情報の地図を作成する関数
+def create_property_map(df):
     if not df.empty:
-        view_state = pdk.ViewState(
-            latitude=df['Lat'].mean(),
-            longitude=df['Lng'].mean(),
-            zoom=11,
-            pitch=50,
+        # 地図の中心位置とズームレベルを設定
+        m = folium.Map(
+            location=[df['Lat'].mean(), df['Lng'].mean()],
+            zoom_start=11
         )
 
-        layer = pdk.Layer(
-            'ScatterplotLayer',
-            data=df,
-            get_position='[Lng, Lat]',
-            get_color='[200, 30, 0, 160]',
-            get_radius=100,
-            pickable=True
-        )
+        # 各物件にマーカーを設置
+        for i, row in df.iterrows():
+            pop = (f"<b>物件名:</b> {row['物件名']}<br>"
+                   f"<b>家賃:</b> {row['家賃']}<br>"
+                   f"<b>間取り:</b> {row['間取り']}<br>"
+                   f"<b>面積:</b> {row['専有面積']}<br>"
+                   f"<b>築年数:</b> {row['築年整数']}<br>"
+                   f"<img src='{row['外観画像カラム']}' width='120px'><br>"
+                   f"<img src='{row['間取り画像カラム']}' width='120px'><br>"
+                   f"<a href='{row['URL']}' target='_blank'>物件詳細</a>")
 
-        # TooltipのHTMLテンプレートに画像とリンクを追加
-        tooltip = {
-            "html": ("<b>物件名:</b> {name}<br>"
-                     "<b>家賃:</b> {家賃}<br>"
-                     "<b>間取り:</b> {間取り}<br>"
-                     "<b>面積:</b> {専有面積}<br>"
-                     "<b>築年数:</b> {築年整数}<br>"
-                     "<img src='{外観画像カラム}' width='120px'><br>"
-                     "<img src='{間取り画像カラム}' width='120px'><br>"
-                     "<a href='{URL}' target='_blank'>物件詳細</a>"),
-            "style": {"backgroundColor": "steelblue", "color": "white"}
-        }
+            folium.Marker(
+                location=[row['Lat'], row['Lng']],
+                popup=folium.Popup(pop, max_width=300),
+                icon=folium.Icon(icon="home", icon_color="white", color="red")
+            ).add_to(m)
 
-        st.pydeck_chart(pdk.Deck(map_style='mapbox://styles/mapbox/light-v9', initial_view_state=view_state, layers=[layer], tooltip=tooltip))
+        return m
     else:
-        st.write("該当する物件はありません。")
+        return folium.Map(location=[36.56583, 139.88361], zoom_start=6)
         
 # //////////////////  データベース系
 
@@ -223,8 +217,9 @@ if selected == "物件検索":
             df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
         ]
 
-        # 結果の地図表示
-        create_map(filtered_properties)
+        # 地図を表示
+        property_map = create_property_map(filtered_properties)
+        st_data = st_folium(property_map, width=1200, height=800)
 
         # テーブル表示
         st.write("検索結果のテーブル:")
