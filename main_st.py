@@ -119,89 +119,67 @@ with st.sidebar:
 if selected == "物件検索":
     st.write("物件検索用のページ")
 
-    # 物件データの読み込み
-    df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
-    
-    # データタイプの変換とNaN値の処理
-    df_properties['専有面積'] = pd.to_numeric(df_properties['専有面積'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['専有面積'], inplace=True)  # 専有面積がNaNの行を削除
-
-    # 家賃のデータ型変換とNaN値の処理
-    df_properties['家賃'] = pd.to_numeric(df_properties['家賃'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['家賃'], inplace=True)  # 家賃がNaNの行を削除
-
-    # 築年整数のデータ型変換とNaN値の処理
-    df_properties['築年整数'] = pd.to_numeric(df_properties['築年整数'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['築年整数'], inplace=True)  # 築年整数がNaNの行を削除
-
-    # 基準階のデータ型変換とNaN値の処理
-    df_properties['基準階'] = pd.to_numeric(df_properties['基準階'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['基準階'], inplace=True)  # 基準階がNaNの行を削除
-
-    # 建物種別のデータ型変換とNaN値の処理
-    df_properties['建物種別'] = df_properties['建物種別'].astype(str)  # 文字列型に変換
-    df_properties['建物種別'].replace('nan', np.nan, inplace=True)  # 'nan' 文字列をNaN値に置き換え
-    df_properties.dropna(subset=['建物種別'], inplace=True)  # 建物種別がNaNの行を削除
-
-    # 最寄り駅1徒歩時間のデータ型変換とNaN値の処理
-    df_properties['最寄り駅1徒歩時間'] = pd.to_numeric(df_properties['最寄り駅1徒歩時間'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['最寄り駅1徒歩時間'], inplace=True)  # 最寄り駅1徒歩時間がNaNの行を削除
-
-
-
     # 絞り込み条件の入力
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        layout_type = st.multiselect("間取り", df_properties['間取り'].unique())
-        built_year = st.slider("築年整数", int(df_properties['築年整数'].min()), int(df_properties['築年整数'].max()), (int(df_properties['築年整数'].min()), int(df_properties['築年整数'].max())))
-        building_type = st.multiselect("建物種別", df_properties['建物種別'].unique())
+        layout_type = st.multiselect("間取り", [])
+        built_year = st.slider("築年整数", 0, 100, (0, 100))
+        building_type = st.multiselect("建物種別", [])
 
     with col2:
-        area = st.slider("専有面積", df_properties['専有面積'].min(), df_properties['専有面積'].max(), (df_properties['専有面積'].min(), df_properties['専有面積'].max()))
-        direction = st.multiselect("向き", df_properties['向き'].unique())
-        rent = st.slider("家賃", df_properties['家賃'].min(), df_properties['家賃'].max(), (df_properties['家賃'].min(), df_properties['家賃'].max()))
+        area = st.slider("専有面積", 0, 200, (0, 200))
+        direction = st.multiselect("向き", [])
+        rent = st.slider("家賃", 0, 1000000, (0, 1000000))
 
     with col3:
-        base_floor = st.slider("基準階", int(df_properties['基準階'].min()), int(df_properties['基準階'].max()), (int(df_properties['基準階'].min()), int(df_properties['基準階'].max())))
-        floor_type = st.multiselect("層分類", df_properties['層分類'].unique())
+        base_floor = st.slider("基準階", 0, 50, (0, 50))
+        floor_type = st.multiselect("層分類", [])
         walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
 
-    # フィルタリング
-    filtered_properties = df_properties[
-        df_properties['間取り'].isin(layout_type) &
-        df_properties['築年整数'].between(*built_year) &
-        df_properties['建物種別'].isin(building_type) &
-        df_properties['専有面積'].between(*area) &
-        df_properties['向き'].isin(direction) &
-        df_properties['家賃'].between(*rent) &
-        df_properties['基準階'].between(*base_floor) &
-        df_properties['層分類'].isin(floor_type) &
-        df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
-    ]
+    # 検索ボタン
+    if st.button('検索'):
+        # 物件データの読み込み
+        df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
+        
+        # データタイプの変換とNaN値の処理
+        # ...（ここに既存のデータ変換とNaN値の処理コードを入れる）
 
-    # 結果の地図表示
-    st.pydeck_chart(pdk.Deck(
-        map_style='mapbox://styles/mapbox/light-v9',
-        initial_view_state=pdk.ViewState(
-            latitude=filtered_properties['Lat'].mean(),
-            longitude=filtered_properties['Lng'].mean(),
-            zoom=11,
-            pitch=50,
-        ),
-        layers=[
-            pdk.Layer(
-                'ScatterplotLayer',
-                data=filtered_properties,
-                get_position='[Lng, Lat]',
-                get_color='[200, 30, 0, 160]',
-                get_radius=100,
+        # フィルタリング
+        filtered_properties = df_properties[
+            df_properties['間取り'].isin(layout_type) &
+            df_properties['築年整数'].between(*built_year) &
+            df_properties['建物種別'].isin(building_type) &
+            df_properties['専有面積'].between(*area) &
+            df_properties['向き'].isin(direction) &
+            df_properties['家賃'].between(*rent) &
+            df_properties['基準階'].between(*base_floor) &
+            df_properties['層分類'].isin(floor_type) &
+            df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
+        ]
+
+        # 結果の地図表示
+        st.pydeck_chart(pdk.Deck(
+            map_style='mapbox://styles/mapbox/light-v9',
+            initial_view_state=pdk.ViewState(
+                latitude=filtered_properties['Lat'].mean(),
+                longitude=filtered_properties['Lng'].mean(),
+                zoom=11,
+                pitch=50,
             ),
-        ],
-    ))
+            layers=[
+                pdk.Layer(
+                    'ScatterplotLayer',
+                    data=filtered_properties,
+                    get_position='[Lng, Lat]',
+                    get_color='[200, 30, 0, 160]',
+                    get_radius=100,
+                ),
+            ],
+        ))
 
-    # 結果のテーブル表示
-    st.dataframe(filtered_properties)
+        # 結果のテーブル表示
+        st.dataframe(filtered_properties)
 
 
 # //////////////////  ログイン・マイページの項目
