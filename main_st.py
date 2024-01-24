@@ -133,6 +133,10 @@ if selected == "物件検索":
     df_properties['築年整数'] = pd.to_numeric(df_properties['築年整数'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
     df_properties.dropna(subset=['築年整数'], inplace=True)  # 築年整数がNaNの行を削除
 
+    # 基準階のデータ型変換とNaN値の処理
+    df_properties['基準階'] = pd.to_numeric(df_properties['基準階'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
+    df_properties.dropna(subset=['基準階'], inplace=True)  # 基準階がNaNの行を削除
+
 
 
     # 絞り込み条件の入力
@@ -149,7 +153,7 @@ if selected == "物件検索":
         rent = st.slider("家賃", df_properties['家賃'].min(), df_properties['家賃'].max(), (df_properties['家賃'].min(), df_properties['家賃'].max()))
 
     with col3:
-        base_floor = st.slider("基準階", 0, 100, (0, 100))
+        base_floor = st.slider("基準階", int(df_properties['基準階'].min()), int(df_properties['基準階'].max()), (int(df_properties['基準階'].min()), int(df_properties['基準階'].max())))
         floor_type = st.multiselect("層分類", df_properties['層分類'].unique())
         walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
 
