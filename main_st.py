@@ -147,20 +147,7 @@ if selected == "物件検索":
     st.write("物件検索用のページ")
     
     # 物件データの読み込み
-    df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
-
-    # 必要なカラムが存在するか確認
-    if '物件コード' in df_properties.columns and '平均レビュー' in df_properties.columns:
-        # 平均レビューカラムの型を数値に変換、欠損値は0で置き換える
-        df_properties['平均レビュー'] = pd.to_numeric(df_properties['平均レビュー'], errors='coerce').fillna(0)
-    
-        # 同一物件コードで最も高い平均レビューを持つレコードのインデックスを取得
-        idx_max_review = df_properties.groupby('物件コード')['平均レビュー'].idxmax()
-    
-        # 最も高い平均レビューを持つレコードを選択
-        df_properties = df_properties.loc[idx_max_review]
-    else:
-        print("必要なカラムが存在しません。")
+    df_properties = get_dataframe_from_sheet(spreadsheet, 'cl2')
                
     # データタイプの変換とNaN値の処理
     df_properties['専有面積'] = pd.to_numeric(df_properties['専有面積'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
