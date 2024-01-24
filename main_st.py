@@ -139,8 +139,6 @@ if selected == "物件検索":
 
     # 検索ボタン
     if st.button('検索'):
-        # 物件データの読み込み
-        df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
         
       　# 物件データの読み込み
         df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
