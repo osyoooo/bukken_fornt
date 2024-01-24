@@ -129,13 +129,18 @@ if selected == "物件検索":
     df_properties['家賃'] = pd.to_numeric(df_properties['家賃'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
     df_properties.dropna(subset=['家賃'], inplace=True)  # 家賃がNaNの行を削除
 
+    # 築年整数のデータ型変換とNaN値の処理
+    df_properties['築年整数'] = pd.to_numeric(df_properties['築年整数'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
+    df_properties.dropna(subset=['築年整数'], inplace=True)  # 築年整数がNaNの行を削除
+
+
 
     # 絞り込み条件の入力
     col1, col2, col3 = st.columns(3)
 
     with col1:
         layout_type = st.multiselect("間取り", df_properties['間取り'].unique())
-        built_year = st.slider("築年整数", 0, 100, (0, 100))
+        built_year = st.slider("築年整数", int(df_properties['築年整数'].min()), int(df_properties['築年整数'].max()), (int(df_properties['築年整数'].min()), int(df_properties['築年整数'].max())))
         building_type = st.multiselect("建物種別", df_properties['建物種別'].unique())
 
     with col2:
