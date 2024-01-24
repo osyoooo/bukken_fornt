@@ -215,28 +215,7 @@ if selected == "物件検索":
         ]
 
         # 結果の地図表示
-        if not filtered_properties.empty:
-            st.pydeck_chart(pdk.Deck(
-                map_style='mapbox://styles/mapbox/light-v9',
-                initial_view_state=pdk.ViewState(
-                    latitude=filtered_properties['Lat'].mean(),
-                    longitude=filtered_properties['Lng'].mean(),
-                    zoom=11,
-                    pitch=50,
-                ),
-                layers=[
-                    pdk.Layer(
-                        'ScatterplotLayer',
-                        data=filtered_properties,
-                        get_position='[Lng, Lat]',
-                        get_color='[200, 30, 0, 160]',
-                        get_radius=100,
-                    ),
-                ],
-            ))
-        else:
-            st.write("該当する物件はありません。")
-
+        create_map(filtered_properties)
  
         # 結果のテーブル表示
         selected_urls = []
