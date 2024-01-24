@@ -230,24 +230,6 @@ if selected == "物件検索":
         # 選択されたURLの表示
         for url in selected_urls:
             st.write(url)
- 
-        # 結果のテーブル表示
-        selected_urls = []
-        for index, row in filtered_properties.iterrows():
-            col1, col2, col3, col4 = st.columns([1, 2, 2, 5])
-            with col1:
-                if st.checkbox("", key=f"checkbox_{index}"):
-                    selected_urls.append(row['URL'])
-            with col2:
-                st.image(row['外観画像カラム'], width=100)
-            with col3:
-                st.image(row['間取り画像カラム'], width=100)
-            with col4:
-                st.write(f"{row['name']}")
-
-        # 選択されたURLの表示
-        for url in selected_urls:
-            st.write(url)
 
 
 # //////////////////  ログイン・マイページの項目
