@@ -217,12 +217,19 @@ if selected == "物件検索":
         create_map(filtered_properties)
 
         # 選択された物件のURLを保存するリスト
-        selected_urls = []
+        # チェックボックスの状態を管理するためのセッション状態を初期化
+        if 'selected_urls' not in st.session_state:
+            st.session_state['selected_urls'] = []
 
         # チェックボックスとテーブルの表示
         for index, row in filtered_properties.iterrows():
-            if st.checkbox(f"選択 {index}", key=f"checkbox_{index}"):
-                selected_urls.append(row['URL'])
+            key = f"checkbox_{index}"
+            if st.checkbox(f"選択 {index}", key=key, value=key in st.session_state['selected_urls']):
+                if key not in st.session_state['selected_urls']:
+                    st.session_state['selected_urls'].append(key)
+            else:
+                if key in st.session_state['selected_urls']:
+                    st.session_state['selected_urls'].remove(key)
 
         st.write("検索結果のテーブル:")
         st.dataframe(filtered_properties)
@@ -231,8 +238,10 @@ if selected == "物件検索":
         if st.button('送信'):
             # 'gas' シートを取得
             gas_sheet = spreadsheet.worksheet('gas')
-            # URLを追加
-            for url in selected_urls:
+            # 選択されたURLを追加
+            for key in st.session_state['selected_urls']:
+                index = int(key.split('_')[-1])
+                url = filtered_properties.iloc[index]['URL']
                 gas_sheet.append_row([url])
             st.success('URLが送信されました')
 
