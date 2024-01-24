@@ -66,15 +66,22 @@ def create_map(df):
             pickable=True
         )
 
+        # TooltipのHTMLテンプレートに画像とリンクを追加
         tooltip = {
-            "html": "<b>物件名:</b> {name}<br><b>家賃:</b> {家賃}<br><b>間取り:</b> {間取り}<br><b>面積:</b> {専有面積}<br><b>築年数:</b> {築年整数}",
+            "html": ("<b>物件名:</b> {name}<br>"
+                     "<b>家賃:</b> {家賃}<br>"
+                     "<b>間取り:</b> {間取り}<br>"
+                     "<b>面積:</b> {専有面積}<br>"
+                     "<b>築年数:</b> {築年整数}<br>"
+                     "<img src='{外観画像カラム}' width='120px'><br>"
+                     "<img src='{間取り画像カラム}' width='120px'><br>"
+                     "<a href='{URL}' target='_blank'>物件詳細</a>"),
             "style": {"backgroundColor": "steelblue", "color": "white"}
         }
 
         st.pydeck_chart(pdk.Deck(map_style='mapbox://styles/mapbox/light-v9', initial_view_state=view_state, layers=[layer], tooltip=tooltip))
     else:
         st.write("該当する物件はありません。")
-
 # //////////////////  データベース系
 
 # StreamlitのSecretsから情報を取得
