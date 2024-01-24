@@ -6,3 +6,4 @@ google-auth
 streamlit
 pydeck
 streamlit-option-menu
+numpy
