@@ -122,14 +122,19 @@ if selected == "物件検索":
     df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
 
     # 絞り込み条件の入力
-    with st.sidebar:
-        st.write("絞り込み条件")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
         layout_type = st.multiselect("間取り", df_properties['間取り'].unique())
         built_year = st.slider("築年整数", 0, 100, (0, 100))
         building_type = st.multiselect("建物種別", df_properties['建物種別'].unique())
+
+    with col2:
         area = st.slider("専有面積", df_properties['専有面積'].min(), df_properties['専有面積'].max(), (df_properties['専有面積'].min(), df_properties['専有面積'].max()))
         direction = st.multiselect("向き", df_properties['向き'].unique())
         rent = st.slider("家賃", df_properties['家賃'].min(), df_properties['家賃'].max(), (df_properties['家賃'].min(), df_properties['家賃'].max()))
+
+    with col3:
         base_floor = st.slider("基準階", 0, 100, (0, 100))
         floor_type = st.multiselect("層分類", df_properties['層分類'].unique())
         walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
