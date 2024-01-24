@@ -143,6 +143,10 @@ if selected == "物件検索":
     df_properties['建物種別'].replace('nan', np.nan, inplace=True)  # 'nan' 文字列をNaN値に置き換え
     df_properties.dropna(subset=['建物種別'], inplace=True)  # 建物種別がNaNの行を削除
 
+    # 最寄り駅1徒歩時間のデータ型変換とNaN値の処理
+    df_properties['最寄り駅1徒歩時間'] = pd.to_numeric(df_properties['最寄り駅1徒歩時間'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
+    df_properties.dropna(subset=['最寄り駅1徒歩時間'], inplace=True)  # 最寄り駅1徒歩時間がNaNの行を削除
+
 
 
     # 絞り込み条件の入力
