@@ -75,6 +75,13 @@ def create_map(df):
     else:
         st.write("該当する物件はありません。")
 
+# テーブルにチェックボックスを追加し、URLを格納する
+def display_table_with_checkboxes(df):
+    selected_urls = []
+    for index, row in df.iterrows():
+        if st.checkbox('', key=f"checkbox_{index}"):
+            selected_urls.append(row['URL'])
+    return selected_urls
 
 # //////////////////  データベース系
 
@@ -216,6 +223,13 @@ if selected == "物件検索":
 
         # 結果の地図表示
         create_map(filtered_properties)
+
+        # テーブル表示とURLの取得
+        selected_urls = display_table_with_checkboxes(filtered_properties)
+        
+        # 選択されたURLの表示
+        for url in selected_urls:
+            st.write(url)
  
         # 結果のテーブル表示
         selected_urls = []
