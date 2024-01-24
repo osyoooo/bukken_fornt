@@ -47,13 +47,33 @@ def initialize_session_state(variables):
         st.session_state[var] = st.session_state.get(var, '')
 
 
-# HTMLでLINE共有ボタンを作成する関数
-def create_line_button(line_url):
-    return f'''
-        <div class="line-it-button" data-lang="ja" data-type="share-a" data-env="REAL" data-url="{line_url}" data-color="default" data-size="large" data-count="false" data-ver="3"></div>
-        <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
-    '''
+# 地図のピン（マーカー）に物件情報を表示する関数
+def create_map(df):
+    if not df.empty:
+        view_state = pdk.ViewState(
+            latitude=df['Lat'].mean(),
+            longitude=df['Lng'].mean(),
+            zoom=11,
+            pitch=50,
+        )
 
+        layer = pdk.Layer(
+            'ScatterplotLayer',
+            data=df,
+            get_position='[Lng, Lat]',
+            get_color='[200, 30, 0, 160]',
+            get_radius=100,
+            pickable=True
+        )
+
+        tooltip = {
+            "html": "<b>物件名:</b> {name}<br><b>家賃:</b> {家賃}<br><b>間取り:</b> {間取り}<br><b>面積:</b> {専有面積}<br><b>築年数:</b> {築年整数}",
+            "style": {"backgroundColor": "steelblue", "color": "white"}
+        }
+
+        st.pydeck_chart(pdk.Deck(map_style='mapbox://styles/mapbox/light-v9', initial_view_state=view_state, layers=[layer], tooltip=tooltip))
+    else:
+        st.write("該当する物件はありません。")
 
 
 # //////////////////  データベース系
@@ -217,8 +237,24 @@ if selected == "物件検索":
         else:
             st.write("該当する物件はありません。")
 
+ 
         # 結果のテーブル表示
-        st.dataframe(filtered_properties)
+        selected_urls = []
+        for index, row in filtered_properties.iterrows():
+            col1, col2, col3, col4 = st.columns([1, 2, 2, 5])
+            with col1:
+                if st.checkbox("", key=f"checkbox_{index}"):
+                    selected_urls.append(row['URL'])
+            with col2:
+                st.image(row['外観画像カラム'], width=100)
+            with col3:
+                st.image(row['間取り画像カラム'], width=100)
+            with col4:
+                st.write(f"{row['name']}")
+
+        # 選択されたURLの表示
+        for url in selected_urls:
+            st.write(url)
 
 
 # //////////////////  ログイン・マイページの項目
