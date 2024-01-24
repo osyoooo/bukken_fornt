@@ -114,43 +114,61 @@ with st.sidebar:
 
 # //////////////////  物件検索のメニュー
 
+# 物件検索のメニュー
 if selected == "物件検索":
     st.write("物件検索用のページ")
 
-    # ダミーの物件データ
-    data_line = {
-        "物件名": ["物件A", "物件B", "物件C"],
-        "URL": ["https://suumo.jp/chintai/jnc_000079607104/", "https://suumo.jp/chintai/jnc_000080672100/", "https://suumo.jp/chintai/jnc_000087709468/"]
-    }
-    df_line = pd.DataFrame(data_line)
+    # 物件データの読み込み
+    df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
 
-    # チェックボックスの列を追加
-    if 'select' not in st.session_state:
-        st.session_state['select'] = [False] * len(df_line)
+    # 絞り込み条件の入力
+    with st.sidebar:
+        st.write("絞り込み条件")
+        layout_type = st.multiselect("間取り", df_properties['間取り'].unique())
+        built_year = st.slider("築年整数", 0, 100, (0, 100))
+        building_type = st.multiselect("建物種別", df_properties['建物種別'].unique())
+        area = st.slider("専有面積", df_properties['専有面積'].min(), df_properties['専有面積'].max(), (df_properties['専有面積'].min(), df_properties['専有面積'].max()))
+        direction = st.multiselect("向き", df_properties['向き'].unique())
+        rent = st.slider("家賃", df_properties['家賃'].min(), df_properties['家賃'].max(), (df_properties['家賃'].min(), df_properties['家賃'].max()))
+        base_floor = st.slider("基準階", 0, 100, (0, 100))
+        floor_type = st.multiselect("層分類", df_properties['層分類'].unique())
+        walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
 
-    # Streamlitのテーブルで表示
-    for index, row in df_line.iterrows():
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            st.session_state['select'][index] = st.checkbox("", key=f"checkbox_{index}")
-        with col2:
-            st.markdown(f"**{row['物件名']}**: {row['URL']}")
+    # フィルタリング
+    filtered_properties = df_properties[
+        df_properties['間取り'].isin(layout_type) &
+        df_properties['築年整数'].between(*built_year) &
+        df_properties['建物種別'].isin(building_type) &
+        df_properties['専有面積'].between(*area) &
+        df_properties['向き'].isin(direction) &
+        df_properties['家賃'].between(*rent) &
+        df_properties['基準階'].between(*base_floor) &
+        df_properties['層分類'].isin(floor_type) &
+        df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
+    ]
 
-    # 選択されたURLを取得
-    df_line['Select'] = st.session_state['select']
-    selected_urls = df_line[df_line['Select']]['URL'].tolist()
+    # 結果の地図表示
+    st.pydeck_chart(pdk.Deck(
+        map_style='mapbox://styles/mapbox/light-v9',
+        initial_view_state=pdk.ViewState(
+            latitude=filtered_properties['Lat'].mean(),
+            longitude=filtered_properties['Lng'].mean(),
+            zoom=11,
+            pitch=50,
+        ),
+        layers=[
+            pdk.Layer(
+                'ScatterplotLayer',
+                data=filtered_properties,
+                get_position='[Lng, Lat]',
+                get_color='[200, 30, 0, 160]',
+                get_radius=100,
+            ),
+        ],
+    ))
 
-    # リセットボタン
-    if st.button('リセット'):
-        st.session_state['select'] = [False] * len(df_line)
-        selected_urls = []
-
-    # 選択されたURLがあれば、LINE共有ボタンを表示
-    if selected_urls:
-        # 最初の選択されたURLに対してLINE共有ボタンを生成
-        line_button_html = create_line_button(selected_urls[0])
-        st.markdown(line_button_html, unsafe_allow_html=True)
-
+    # 結果のテーブル表示
+    st.dataframe(filtered_properties)
 
 
 # //////////////////  ログイン・マイページの項目
