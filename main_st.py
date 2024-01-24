@@ -125,6 +125,11 @@ if selected == "物件検索":
     df_properties['専有面積'] = pd.to_numeric(df_properties['専有面積'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
     df_properties.dropna(subset=['専有面積'], inplace=True)  # 専有面積がNaNの行を削除
 
+    # 家賃のデータ型変換とNaN値の処理
+    df_properties['家賃'] = pd.to_numeric(df_properties['家賃'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
+    df_properties.dropna(subset=['家賃'], inplace=True)  # 家賃がNaNの行を削除
+
+
     # 絞り込み条件の入力
     col1, col2, col3 = st.columns(3)
 
