@@ -120,6 +120,10 @@ if selected == "物件検索":
 
     # 物件データの読み込み
     df_properties = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
+    
+    # データタイプの変換とNaN値の処理
+    df_properties['専有面積'] = pd.to_numeric(df_properties['専有面積'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
+    df_properties.dropna(subset=['専有面積'], inplace=True)  # 専有面積がNaNの行を削除
 
     # 絞り込み条件の入力
     col1, col2, col3 = st.columns(3)
