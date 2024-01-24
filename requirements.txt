@@ -1,6 +1,7 @@
 gspread
 gspread-dataframe
 folium
+streamlit_folium
 requests
 pandas
 google-auth
