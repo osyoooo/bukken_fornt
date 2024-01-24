@@ -60,7 +60,7 @@ def create_property_map(df):
 
         # 各物件にマーカーを設置
         for i, row in df.iterrows():
-            pop = (f"<b>物件名:</b> {row['物件名']}<br>"
+            pop = (f"<b>name:</b> {row['name']}<br>"
                    f"<b>家賃:</b> {row['家賃']}<br>"
                    f"<b>間取り:</b> {row['間取り']}<br>"
                    f"<b>面積:</b> {row['専有面積']}<br>"
