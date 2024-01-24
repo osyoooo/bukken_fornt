@@ -11,6 +11,8 @@ import pydeck as pdk
 from urllib.request import urlopen #jsonファイル形式で取得するアニメーションファイルをアプリに表示する
 from streamlit_option_menu import option_menu
 import numpy as np
+import folium
+from streamlit_folium import st_folium
 
 # //////////////////  関数
 
