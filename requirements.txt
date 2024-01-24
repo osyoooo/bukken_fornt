@@ -1,5 +1,6 @@
 gspread
 gspread-dataframe
+folium
 requests
 pandas
 google-auth
@@ -7,4 +8,4 @@ streamlit
 pydeck
 streamlit-option-menu
 numpy
-folium
+
