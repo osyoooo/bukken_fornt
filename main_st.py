@@ -137,6 +137,11 @@ if selected == "物件検索":
     df_properties['基準階'] = pd.to_numeric(df_properties['基準階'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
     df_properties.dropna(subset=['基準階'], inplace=True)  # 基準階がNaNの行を削除
 
+    # 建物種別のデータ型変換とNaN値の処理
+    df_properties['建物種別'] = df_properties['建物種別'].astype(str)  # 文字列型に変換
+    df_properties['建物種別'].replace('nan', np.nan, inplace=True)  # 'nan' 文字列をNaN値に置き換え
+    df_properties.dropna(subset=['建物種別'], inplace=True)  # 建物種別がNaNの行を削除
+
 
 
     # 絞り込み条件の入力
