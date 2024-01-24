@@ -6,12 +6,12 @@ import gspread
 from google.oauth2.service_account import Credentials
 import os
 import json
-import streamlit as st
 import pydeck as pdk
 from urllib.request import urlopen #jsonファイル形式で取得するアニメーションファイルをアプリに表示する
 from streamlit_option_menu import option_menu
 import numpy as np
 import folium
+import streamlit as st
 from streamlit_folium import st_folium
 
 # //////////////////  関数
