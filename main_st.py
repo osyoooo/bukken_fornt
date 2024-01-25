@@ -72,7 +72,7 @@ def create_property_map(df):
     if not df.empty:
         m = folium.Map(
             location=[35.574977, 139.709259],
-            zoom_start=6
+            zoom_start=6,
             tiles="Stamen Terrain"
         )
         for i, row in df.iterrows():
