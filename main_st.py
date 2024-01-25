@@ -211,9 +211,6 @@ if selected == "物件検索":
             df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
         ]
 
-        # 検索結果のレコード数を表示
-
-
     # 地図とテーブルの表示
     if not st.session_state['filtered_properties'].empty:
         num_results = len(st.session_state['filtered_properties'])
@@ -223,6 +220,7 @@ if selected == "物件検索":
         st.write("検索結果のテーブル:")
         st.dataframe(st.session_state['filtered_properties'])
 
+        st.write(登録済みのユーザーは物件URLを関係者にメールで共有できます)
         # URL送信ボタン
         if st.button('送信'):
             # 検索結果テーブルからURLを取得
