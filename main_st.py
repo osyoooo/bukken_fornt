@@ -183,7 +183,7 @@ if selected == "物件検索":
         direction = st.multiselect("向き", options=direction_options, default=direction_options)
 
     with col3:
-        rent = st.slider("家賃", 0, 500000, (0, 500000))
+        rent = st.slider("家賃", 0, 50, (0, 50))
         built_year = st.slider("築年数", 0, 50, (0, 50))
         area = st.slider("専有面積", 0, 100, (0, 100))
         base_floor = st.slider("物件の階数", 0, 50, (0, 50))
