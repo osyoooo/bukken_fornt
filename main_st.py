@@ -183,11 +183,11 @@ if selected == "物件検索":
         direction = st.multiselect("向き", options=direction_options, default=direction_options)
 
     with col3:
-        rent = st.slider("家賃", 0, 1000000, (0, 1000000))
-        built_year = st.slider("築年数", 0, 100, (0, 100))
-        area = st.slider("専有面積", 0, 200, (0, 200))
+        rent = st.slider("家賃", 0, 500000, (0, 500000))
+        built_year = st.slider("築年数", 0, 50, (0, 50))
+        area = st.slider("専有面積", 0, 100, (0, 100))
         base_floor = st.slider("物件の階数", 0, 50, (0, 50))
-        walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
+        walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 30, (0, 30))
 
     # 検索ボタン
     if st.button('検索'):
