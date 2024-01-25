@@ -177,17 +177,16 @@ if selected == "物件検索":
     with col1:
         building_type = st.multiselect("建物種別", options=building_type_options, default=building_type_options)
         layout_type = st.multiselect("間取り", options=layout_options, default=layout_options)
-        
 
     with col2:
-        floor_type = st.multiselect("物件がある階層", options=floor_type_options, default=floor_type_options)  # 表示名を変更
+        floor_type = st.multiselect("物件がある階層", options=floor_type_options, default=floor_type_options)
         direction = st.multiselect("向き", options=direction_options, default=direction_options)
 
     with col3:
         rent = st.slider("家賃", 0, 1000000, (0, 1000000))
-        built_year = st.slider("築年数", 0, 100, (0, 50))  # 表示名を変更
+        built_year = st.slider("築年数", 0, 100, (0, 100))
         area = st.slider("専有面積", 0, 200, (0, 200))
-        base_floor = st.slider("物件の階数", 0, 50, (0, 50))  # 表示名を変更
+        base_floor = st.slider("物件の階数", 0, 50, (0, 50))
         walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
 
     # 検索ボタン
