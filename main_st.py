@@ -71,8 +71,9 @@ def load_property_data():
 def create_property_map(df):
     if not df.empty:
         m = folium.Map(
-            location=[df['Lat'].mean(), df['Lng'].mean()],
-            zoom_start=11
+            location=[35.574977, 139.709259],
+            zoom_start=6
+            tiles="Stamen Terrain"
         )
         for i, row in df.iterrows():
             pop = (f"<b>物件名:</b> {row['name']}<br>"
