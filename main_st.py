@@ -50,7 +50,7 @@ def initialize_session_state(variables):
 
 # 物件データを読み込み、前処理を行う関数
 def load_property_data():
-    df = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
+    df = get_dataframe_from_sheet(spreadsheet, 'cl2')
 
     # データ型の変換とNaN値の処理
     df['専有面積'] = pd.to_numeric(df['専有面積'], errors='coerce')
