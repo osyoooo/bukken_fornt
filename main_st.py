@@ -205,9 +205,9 @@ if selected == "物件検索":
             df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
         ]
 
-            # 検索結果のレコード数を表示
-            num_results = len(st.session_state['filtered_properties'])
-            st.write(f"検索結果: {num_results}件の物件が見つかりました。")
+        # 検索結果のレコード数を表示
+        num_results = len(st.session_state['filtered_properties'])
+        st.write(f"検索結果: {num_results}件の物件が見つかりました。")
 
     # 地図とテーブルの表示
     if not st.session_state['filtered_properties'].empty:
