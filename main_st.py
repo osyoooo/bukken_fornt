@@ -212,7 +212,7 @@ if selected == "物件検索":
         num_results = len(st.session_state['filtered_properties'])
         st.write(f"検索結果: {num_results}件の物件が見つかりました。")
         property_map = create_property_map(st.session_state['filtered_properties'])
-        st_data = st_folium(property_map, width=600, height=600)
+        st_data = st_folium(property_map, width=800, height=700)
         st.write("検索結果のテーブル:")
         st.dataframe(st.session_state['filtered_properties'])
 
