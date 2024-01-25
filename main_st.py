@@ -160,6 +160,8 @@ if selected == "物件検索":
     # セッション状態で物件データを管理
     if 'df_properties' not in st.session_state:
         st.session_state['df_properties'] = load_property_data()
+    if 'filtered_properties' not in st.session_state:
+        st.session_state['filtered_properties'] = pd.DataFrame()
 
     df_properties = st.session_state['df_properties']
 
@@ -168,7 +170,7 @@ if selected == "物件検索":
     building_type_options = df_properties['建物種別'].unique()
     direction_options = df_properties['向き'].unique()
     floor_type_options = df_properties['層分類'].unique()
-
+    
     # 絞り込み条件の入力（デフォルトで全選択）
     col1, col2, col3 = st.columns(3)
 
@@ -189,8 +191,8 @@ if selected == "物件検索":
 
     # 検索ボタン
     if st.button('検索'):
-        # フィルタリング
-        filtered_properties = df_properties[
+        # フィルタリング処理
+        st.session_state['filtered_properties'] = df_properties[
             df_properties['間取り'].isin(layout_type) &
             df_properties['築年整数'].between(*built_year) &
             df_properties['建物種別'].isin(building_type) &
@@ -202,23 +204,22 @@ if selected == "物件検索":
             df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
         ]
 
-        # 地図を表示
-        property_map = create_property_map(filtered_properties)
+    # 地図とテーブルの表示
+    if not st.session_state['filtered_properties'].empty:
+        property_map = create_property_map(st.session_state['filtered_properties'])
         st_data = st_folium(property_map, width=1200, height=800)
-
-        # テーブル表示
         st.write("検索結果のテーブル:")
-        st.dataframe(filtered_properties)
+        st.dataframe(st.session_state['filtered_properties'])
 
-        # URLをSpreadsheetの 'gas' シートに送信するボタン
+        # URL送信ボタン
         if st.button('送信'):
-            # 'gas' シートを取得
             gas_sheet = spreadsheet.worksheet('gas')
             for key in st.session_state['selected_urls']:
                 index = int(key.split('_')[-1])
                 url = filtered_properties.iloc[index]['URL']
                 gas_sheet.append_row([url])
             st.success('URLが送信されました')
+
 
 
 # //////////////////  ログイン・マイページの項目
