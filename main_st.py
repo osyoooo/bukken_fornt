@@ -92,7 +92,14 @@ def create_property_map(df):
     else:
         return folium.Map(location=[35.574977, 139.709259], zoom_start=6, tiles="Stamen Terrain")
 
-        
+#　検索結果をGAS用のスプシに送る関数
+def send_url_to_gas_sheet(url, spreadsheet):
+    # 'gas' シートを取得
+    gas_sheet = spreadsheet.worksheet('gas')
+
+    # スプレッドシートの最後の行にURLを追加
+    gas_sheet.append_row([url])
+
 # //////////////////  データベース系
 
 # StreamlitのSecretsから情報を取得
@@ -218,13 +225,14 @@ if selected == "物件検索":
 
         # URL送信ボタン
         if st.button('送信'):
-            gas_sheet = spreadsheet.worksheet('gas')
-            for key in st.session_state['selected_urls']:
-                index = int(key.split('_')[-1])
-                url = filtered_properties.iloc[index]['URL']
-                gas_sheet.append_row([url])
+            # 検索結果テーブルからURLを取得
+            for index, row in st.session_state['filtered_properties'].iterrows():
+                gas_url = row['URL']
+        
+                # URLをスプレッドシートに送信
+                send_url_to_gas_sheet(gas_url, spreadsheet)
+        
             st.success('URLが送信されました')
-
 
 
 # //////////////////  ログイン・マイページの項目
