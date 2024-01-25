@@ -163,7 +163,6 @@ if selected == "物件検索":
 
     df_properties = st.session_state['df_properties']
 
-
     # 絞り込み条件のオプションを取得
     layout_options = df_properties['間取り'].unique()
     building_type_options = df_properties['建物種別'].unique()
@@ -191,7 +190,17 @@ if selected == "物件検索":
     # 検索ボタン
     if st.button('検索'):
         # フィルタリング
-        # （省略）
+        filtered_properties = df_properties[
+            df_properties['間取り'].isin(layout_type) &
+            df_properties['築年整数'].between(*built_year) &
+            df_properties['建物種別'].isin(building_type) &
+            df_properties['専有面積'].between(*area) &
+            df_properties['向き'].isin(direction) &
+            df_properties['家賃'].between(*rent) &
+            df_properties['基準階'].between(*base_floor) &
+            df_properties['層分類'].isin(floor_type) &
+            df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
+        ]
 
         # 地図を表示
         property_map = create_property_map(filtered_properties)
@@ -203,13 +212,13 @@ if selected == "物件検索":
 
         # URLをSpreadsheetの 'gas' シートに送信するボタン
         if st.button('送信'):
+            # 'gas' シートを取得
             gas_sheet = spreadsheet.worksheet('gas')
             for key in st.session_state['selected_urls']:
                 index = int(key.split('_')[-1])
                 url = filtered_properties.iloc[index]['URL']
                 gas_sheet.append_row([url])
             st.success('URLが送信されました')
-
 
 
 # //////////////////  ログイン・マイページの項目
