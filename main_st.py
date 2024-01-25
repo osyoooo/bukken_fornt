@@ -217,12 +217,11 @@ if selected == "物件検索":
         st.write(f"検索結果: {num_results}件の物件が見つかりました。")
         property_map = create_property_map(st.session_state['filtered_properties'])
         st_data = st_folium(property_map, width=800, height=700)
-        st.write("検索結果のテーブル:")
+        st.write("条件に一致する物件の一覧:")
         st.dataframe(st.session_state['filtered_properties'])
 
-        st.write(登録済みのユーザーは物件URLを関係者にメールで共有できます)
         # URL送信ボタン
-        if st.button('送信'):
+        if st.button('送信を押すと検索結果の物件URLを関係者に共有できます'):
             # 検索結果テーブルからURLを取得
             for index, row in st.session_state['filtered_properties'].iterrows():
                 gas_url = row['URL']
