@@ -48,6 +48,24 @@ def initialize_session_state(variables):
     for var in variables:
         st.session_state[var] = st.session_state.get(var, '')
 
+# 物件データを読み込み、前処理を行う関数
+def load_property_data():
+    df = get_dataframe_from_sheet(spreadsheet, 'cleansing_suumo_bukken')
+
+    # データ型の変換とNaN値の処理
+    df['専有面積'] = pd.to_numeric(df['専有面積'], errors='coerce')
+    df['家賃'] = pd.to_numeric(df['家賃'], errors='coerce')
+    df['築年整数'] = pd.to_numeric(df['築年整数'], errors='coerce')
+    df['基準階'] = pd.to_numeric(df['基準階'], errors='coerce')
+    df['建物種別'] = df['建物種別'].astype(str)
+    df['最寄り駅1徒歩時間'] = pd.to_numeric(df['最寄り駅1徒歩時間'], errors='coerce')
+    df['Lat'] = pd.to_numeric(df['Lat'], errors='coerce')
+    df['Lng'] = pd.to_numeric(df['Lng'], errors='coerce')
+
+    # NaN値を削除
+    df.dropna(subset=['専有面積', '家賃', '築年整数', '基準階', '建物種別', '最寄り駅1徒歩時間', 'Lat', 'Lng'], inplace=True)
+    
+    return df
 
 # 地図のマーカーに物件情報を表示する関数
 def create_property_map(df):
@@ -56,9 +74,8 @@ def create_property_map(df):
             location=[df['Lat'].mean(), df['Lng'].mean()],
             zoom_start=11
         )
-
         for i, row in df.iterrows():
-            pop = (f"<b>name:</b> {row['name']}<br>"
+            pop = (f"<b>物件名:</b> {row['name']}<br>"
                    f"<b>家賃:</b> {row['家賃']}<br>"
                    f"<b>間取り:</b> {row['間取り']}<br>"
                    f"<b>面積:</b> {row['専有面積']}<br>"
@@ -74,6 +91,7 @@ def create_property_map(df):
         return m
     else:
         return folium.Map(location=[36.56583, 139.88361], zoom_start=6)
+
         
 # //////////////////  データベース系
 
@@ -98,6 +116,7 @@ df_login = get_dataframe_from_sheet(spreadsheet, 'login')
 # セッション状態の初期化 このコードはログインアウトによって分岐を行うコード群の一番上にしないと正しく初期化されない
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
+
 
 # サイドバーにオプションメニューを追加
 with st.sidebar:
@@ -137,41 +156,12 @@ with st.sidebar:
 # 物件検索のメニュー
 if selected == "物件検索":
     st.write("物件検索用のページ")
-    
-    # 物件データの読み込み
-    df_properties = get_dataframe_from_sheet(spreadsheet, 'cl2')
-               
-    # データタイプの変換とNaN値の処理
-    df_properties['専有面積'] = pd.to_numeric(df_properties['専有面積'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['専有面積'], inplace=True)  # 専有面積がNaNの行を削除
-    
-    # 家賃のデータ型変換とNaN値の処理
-    df_properties['家賃'] = pd.to_numeric(df_properties['家賃'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['家賃'], inplace=True)  # 家賃がNaNの行を削除
-    
-    # 築年整数のデータ型変換とNaN値の処理
-    df_properties['築年整数'] = pd.to_numeric(df_properties['築年整数'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['築年整数'], inplace=True)  # 築年整数がNaNの行を削除
-    
-    # 基準階のデータ型変換とNaN値の処理
-    df_properties['基準階'] = pd.to_numeric(df_properties['基準階'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['基準階'], inplace=True)  # 基準階がNaNの行を削除
-    
-    # 建物種別のデータ型変換とNaN値の処理
-    df_properties['建物種別'] = df_properties['建物種別'].astype(str)  # 文字列型に変換
-    df_properties['建物種別'].replace('nan', np.nan, inplace=True)  # 'nan' 文字列をNaN値に置き換え
-    df_properties.dropna(subset=['建物種別'], inplace=True)  # 建物種別がNaNの行を削除
-    
-    # 最寄り駅1徒歩時間のデータ型変換とNaN値の処理
-    df_properties['最寄り駅1徒歩時間'] = pd.to_numeric(df_properties['最寄り駅1徒歩時間'], errors='coerce')  # 数値型に変換、変換できない値はNaNにする
-    df_properties.dropna(subset=['最寄り駅1徒歩時間'], inplace=True)  # 最寄り駅1徒歩時間がNaNの行を削除
 
-    # データの前処理で 'Lat' と 'Lng' カラムを数値型に変換
-    df_properties['Lat'] = pd.to_numeric(df_properties['Lat'], errors='coerce')
-    df_properties['Lng'] = pd.to_numeric(df_properties['Lng'], errors='coerce')
-    
-    # NaN値を削除（もしくは他の方法で処理）
-    df_properties.dropna(subset=['Lat', 'Lng'], inplace=True)
+    # セッション状態で物件データを管理
+    if 'df_properties' not in st.session_state:
+        st.session_state['df_properties'] = load_property_data()
+
+    df_properties = st.session_state['df_properties']
 
 
     # 絞り込み条件のオプションを取得
@@ -201,17 +191,7 @@ if selected == "物件検索":
     # 検索ボタン
     if st.button('検索'):
         # フィルタリング
-        filtered_properties = df_properties[
-            df_properties['間取り'].isin(layout_type) &
-            df_properties['築年整数'].between(*built_year) &
-            df_properties['建物種別'].isin(building_type) &
-            df_properties['専有面積'].between(*area) &
-            df_properties['向き'].isin(direction) &
-            df_properties['家賃'].between(*rent) &
-            df_properties['基準階'].between(*base_floor) &
-            df_properties['層分類'].isin(floor_type) &
-            df_properties['最寄り駅1徒歩時間'].between(*walk_time_to_station)
-        ]
+        # （省略）
 
         # 地図を表示
         property_map = create_property_map(filtered_properties)
@@ -220,12 +200,10 @@ if selected == "物件検索":
         # テーブル表示
         st.write("検索結果のテーブル:")
         st.dataframe(filtered_properties)
-        
+
         # URLをSpreadsheetの 'gas' シートに送信するボタン
         if st.button('送信'):
-            # 'gas' シートを取得
             gas_sheet = spreadsheet.worksheet('gas')
-            # 選択されたURLを追加
             for key in st.session_state['selected_urls']:
                 index = int(key.split('_')[-1])
                 url = filtered_properties.iloc[index]['URL']
