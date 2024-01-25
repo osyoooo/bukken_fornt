@@ -72,7 +72,7 @@ def create_property_map(df):
     if not df.empty:
         m = folium.Map(
             location=[35.574977, 139.709259],
-            zoom_start=6,
+            zoom_start=20,
         )
         for i, row in df.iterrows():
             pop = (f"<b>物件名:</b> {row['name']}<br>"
