@@ -90,7 +90,7 @@ def create_property_map(df):
             ).add_to(m)
         return m
     else:
-        return folium.Map(location=[36.56583, 139.88361], zoom_start=6)
+        return folium.Map(location=[36.56583, 139.88361], zoom_start=6, tiles="Stamen Terrain")
 
         
 # //////////////////  データベース系
