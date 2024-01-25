@@ -49,16 +49,14 @@ def initialize_session_state(variables):
         st.session_state[var] = st.session_state.get(var, '')
 
 
-# 物件情報の地図を作成する関数
+# 地図のマーカーに物件情報を表示する関数
 def create_property_map(df):
     if not df.empty:
-        # 地図の中心位置とズームレベルを設定
         m = folium.Map(
             location=[df['Lat'].mean(), df['Lng'].mean()],
             zoom_start=11
         )
 
-        # 各物件にマーカーを設置
         for i, row in df.iterrows():
             pop = (f"<b>name:</b> {row['name']}<br>"
                    f"<b>家賃:</b> {row['家賃']}<br>"
@@ -68,13 +66,11 @@ def create_property_map(df):
                    f"<img src='{row['外観画像カラム']}' width='120px'><br>"
                    f"<img src='{row['間取り画像カラム']}' width='120px'><br>"
                    f"<a href='{row['URL']}' target='_blank'>物件詳細</a>")
-
             folium.Marker(
                 location=[row['Lat'], row['Lng']],
                 popup=folium.Popup(pop, max_width=300),
                 icon=folium.Icon(icon="home", icon_color="white", color="red")
             ).add_to(m)
-
         return m
     else:
         return folium.Map(location=[36.56583, 139.88361], zoom_start=6)
