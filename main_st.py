@@ -90,7 +90,7 @@ def create_property_map(df):
             ).add_to(m)
         return m
     else:
-        return folium.Map(location=[36.56583, 139.88361], zoom_start=6, tiles="Stamen Terrain")
+        return folium.Map(location=[35.574977, 139.709259], zoom_start=6, tiles="Stamen Terrain")
 
         
 # //////////////////  データベース系
@@ -155,7 +155,7 @@ with st.sidebar:
 
 # 物件検索のメニュー
 if selected == "物件検索":
-    st.write("物件検索用のページ")
+    st.write("条件を選択して検索ボタンを押してください")
 
     # セッション状態で物件データを管理
     if 'df_properties' not in st.session_state:
@@ -175,18 +175,18 @@ if selected == "物件検索":
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        layout_type = st.multiselect("間取り", options=layout_options, default=layout_options)
-        built_year = st.slider("築年数", 0, 100, (0, 100))  # 表示名を変更
         building_type = st.multiselect("建物種別", options=building_type_options, default=building_type_options)
+        layout_type = st.multiselect("間取り", options=layout_options, default=layout_options)
+        area = st.slider("専有面積", 0, 200, (0, 200))
 
     with col2:
-        area = st.slider("専有面積", 0, 200, (0, 200))
-        direction = st.multiselect("向き", options=direction_options, default=direction_options)
         rent = st.slider("家賃", 0, 1000000, (0, 1000000))
+        built_year = st.slider("築年数", 0, 100, (0, 100))  # 表示名を変更
+        direction = st.multiselect("向き", options=direction_options, default=direction_options)
 
     with col3:
-        base_floor = st.slider("物件の階数", 0, 50, (0, 50))  # 表示名を変更
         floor_type = st.multiselect("物件がある階層", options=floor_type_options, default=floor_type_options)  # 表示名を変更
+        base_floor = st.slider("物件の階数", 0, 50, (0, 50))  # 表示名を変更
         walk_time_to_station = st.slider("最寄り駅1徒歩時間", 0, 60, (0, 60))
 
     # 検索ボタン
