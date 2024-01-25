@@ -209,7 +209,7 @@ if selected == "物件検索":
 
     # 地図とテーブルの表示
     if not st.session_state['filtered_properties'].empty:
-        num_results = len(['filtered_properties'])
+        num_results = len(st.session_state['filtered_properties'])
         st.write(f"検索結果: {num_results}件の物件が見つかりました。")
         property_map = create_property_map(st.session_state['filtered_properties'])
         st_data = st_folium(property_map, width=800, height=800)
