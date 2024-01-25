@@ -211,7 +211,7 @@ if selected == "物件検索":
     # 地図とテーブルの表示
     if not st.session_state['filtered_properties'].empty:
         property_map = create_property_map(st.session_state['filtered_properties'])
-        st_data = st_folium(property_map, width=1200, height=800)
+        st_data = st_folium(property_map, width=1200, height=1200)
         st.write("検索結果のテーブル:")
         st.dataframe(st.session_state['filtered_properties'])
 
