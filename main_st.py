@@ -221,7 +221,7 @@ if selected == "物件検索":
         st.dataframe(st.session_state['filtered_properties'])
 
         # URL送信ボタン
-        if st.button('送信を押すと検索結果の物件URLを関係者に共有できます'):
+        if st.button('このボタンを押すと検索結果の物件URLを関係者に共有できます'):
             # 検索結果テーブルからURLを取得
             for index, row in st.session_state['filtered_properties'].iterrows():
                 gas_url = row['URL']
